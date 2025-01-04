@@ -1,0 +1,1 @@
+This directory is for images that are used for the repository contents (like README).
