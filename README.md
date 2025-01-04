@@ -1,7 +1,7 @@
-My-Template-Repository
+Job Keywords
 ===
 
 ![image](img/title.png)
 
 ## 概要
-これは個人的なリポジトリのテンプレートです。
+職務内容に含まれるキーワード集計。
