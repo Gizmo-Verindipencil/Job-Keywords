@@ -49,15 +49,17 @@ export class Gateway {
         throw new Error("Failed to fetch data");
       }
       const text = await response.text();
-      return text.split("\n").map(x => {
-        const i = x.lastIndexOf(",");
-        const keyword = x.substring(0, i);
-        const count = x.substring(i + 1);
-        return {
-          keyword: keyword,
-          count: Number(count)
-        }
-      });
+      return text.split("\n")
+        .filter(x => x)
+        .map(x => {
+            const i = x.lastIndexOf(",");
+            const keyword = x.substring(0, i);
+            const count = x.substring(i + 1);
+            return {
+            keyword: keyword,
+            count: Number(count)
+            }
+        });
     } catch (error) {
       console.error("Error fetching data:", error);
       return null;

@@ -8,6 +8,10 @@ body {
   min-height: 100vh;
 }
 
+.error span {
+  color: #f20000;
+}
+
 .option select {
   margin: 0.5rem;
   width: 10rem;

@@ -113,10 +113,23 @@ class Index {
     fileName += ".csv";
 
     // キャンバスを更新
+    this.#setError("");
     this.#canvas.clear();
     const uri = `${dataSource.dataDirUri}/${fileName}`;
     const pairs = await this.#gateway.fetchKeywordAggregation(uri);
+    if (pairs.length === 0) {
+      this.#setError("No Data");
+      return;
+    }
     this.#canvas.update(pairs.map(x => [ x.keyword, x.count ]));
+  }
+
+  /**
+   * エラーテキストを設定します。
+   * @param {string} text 表示テキスト。
+   */
+  #setError = text => {
+    document.getElementById("error").innerHTML = `<span>${text}</span>`;
   }
 }
 
