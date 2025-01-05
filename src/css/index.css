@@ -1,0 +1,20 @@
+body {
+  align-items: center;
+  background-color: #f4f4f9;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.option select {
+  margin: 0.5rem;
+  width: 10rem;
+}
+
+.wordcloud {
+  border: 1px solid #dadada;
+  height: 800px;
+  width: 1200px;
+}
