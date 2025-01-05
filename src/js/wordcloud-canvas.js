@@ -27,6 +27,15 @@ export class WordCloudCanvas {
    * @param {string|number[][]} pairs テキストとウェイトの組の配列。組の1つ目の要素は string、2つ目は number。
    */
   update = pairs => {
+    // レンダリング用にウェイトを最大50に制限
+    const maxCount = Math.max(...pairs.map(x => x[1]));
+    const scale = 50 / maxCount;
+    pairs.forEach(x => x[1] = x[1] * scale);
+
+    // 先頭300件のキーワードに制限
+    pairs = pairs.sort((a, b) => b[1] - a[1]).slice(0, 300);
+
+    // キャンバスを更新
     WordCloud(this.#canvas, {
       list: pairs,
       gridSize: 2,
