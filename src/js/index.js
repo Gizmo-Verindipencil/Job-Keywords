@@ -64,6 +64,9 @@ class Index {
       this.#option.category2List.add("", "");
       this.#option.category2List.value = "";
       new Set(relatedCategories).forEach(x => this.#option.category2List.add(x, x));
+      if (relatedCategories.length === 0) {
+        await this.#updateCanvas();
+      }
     });
 
     // カテゴリ2選択時にリストを更新
@@ -79,28 +82,40 @@ class Index {
       this.#option.category3List.add("", "");
       this.#option.category3List.value = "";
       new Set(relatedCategories).forEach(x => this.#option.category3List.add(x, x));
+      if (relatedCategories.length === 0) {
+        await this.#updateCanvas();
+      }
     });
 
     // カテゴリ3選択時にリストを更新
     const canvas = new WordCloudCanvas(document.getElementById("wordcloud"));
-    this.#option.category3List.raw.addEventListener("change", async (event) => {
-      // カテゴリをクリア
-      const category1 = this.#option.category1List.raw.value;
-      const category2 = this.#option.category2List.raw.value;
-      const category3 = event.target.value;
-
-      // キャンバスを更新
-      const selectedDataSource = this.#option.dataSourceList.raw.value;
-      const dataSource = dataSources.find(x => x.uri == selectedDataSource);
-      canvas.clear();
-      if (!dataSource) return;
-      const uri = `${dataSource.dataDirUri}/${category1}__${category2}__${category3}.csv`;
-      const pairs = await this.#gateway.fetchKeywordAggregation(uri);
-      
-      console.log(pairs);
-      
-      canvas.update(pairs.map(x => [ x.keyword, x.count ]));
+    this.#option.category3List.raw.addEventListener("change", async (_) => {
+      await this.#updateCanvas();
     });
+  }
+
+  /**
+   * キャンバスを更新します。 
+   */
+  #updateCanvas = async() => {
+    // カテゴリをクリア
+    const category1 = this.#option.category1List.raw.value;
+    const category2 = this.#option.category2List.raw.value;
+    const category3 = this.#option.category3List.raw.value;
+
+    let fileName = category1;
+    if (category2) fileName += `__${category2}`;
+    if (category3) fileName += `__${category3}`;
+    fileName += ".csv";
+
+    // キャンバスを更新
+    const selectedDataSource = this.#option.dataSourceList.raw.value;
+    const dataSource = dataSources.find(x => x.uri == selectedDataSource);
+    canvas.clear();
+    if (!dataSource) return;
+    const uri = `${dataSource.dataDirUri}/${fileName}`;
+    const pairs = await this.#gateway.fetchKeywordAggregation(uri);
+    canvas.update(pairs.map(x => [ x.keyword, x.count ]));
   }
 }
 
