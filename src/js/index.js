@@ -26,7 +26,8 @@ class Index {
       document.getElementById("data-source"),
       document.getElementById("category1"),
       document.getElementById("category2"),
-      document.getElementById("category3")
+      document.getElementById("category3"),
+      document.getElementById("exclude-keywords")
     );
 
     const dataSources = await this.#gateway.fetchDataSources();
@@ -112,15 +113,19 @@ class Index {
     if (category3) fileName += `__${category3}`;
     fileName += ".csv";
 
-    // キャンバスを更新
+    // データを取得
     this.#setError("");
-    this.#canvas.clear();
     const uri = `${dataSource.dataDirUri}/${fileName}`;
-    const pairs = await this.#gateway.fetchKeywordAggregation(uri);
+    let pairs = await this.#gateway.fetchKeywordAggregation(uri);
+    const excludeKeywords = this.#option.excludeKeywords.value.split(",");
+    pairs = pairs.filter(x => !excludeKeywords.includes(x.keyword));
     if (pairs.length === 0) {
       this.#setError("No Data");
       return;
     }
+
+    // キャンバスを更新
+    this.#canvas.clear();
     this.#canvas.update(pairs.map(x => [ x.keyword, x.count ]));
   }
 

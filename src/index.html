@@ -10,10 +10,15 @@
 <body>
   <div id="error" class="error"></div>
   <div class="option">
-    <select id="data-source"></select>
-    <select id="category1"></select>
-    <select id="category2"></select>
-    <select id="category3"></select>
+    <div class="target">
+      <select id="data-source"></select>
+      <select id="category1"></select>
+      <select id="category2"></select>
+      <select id="category3"></select>
+    </div>
+    <div class="exclude-keywords">
+      <textarea id="exclude-keywords"></textarea>
+    </div>
   </div>
   <canvas id="wordcloud" class="wordcloud"></canvas>
   <script type="module">
