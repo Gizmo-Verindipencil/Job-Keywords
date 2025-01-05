@@ -38,12 +38,12 @@ export class WordCloudCanvas {
     // キャンバスを更新
     WordCloud(this.#canvas, {
       list: pairs,
-      gridSize: 2,
-      weightFactor: 1,
+      gridSize: 5,
+      weightFactor: 2.5,
       fontFamily: 'Arial',
       color: 'random-dark',
       backgroundColor: '#fff',
-      rotateRatio: 0.25,
+      rotateRatio: 0.5,
     });
   }
 
