@@ -88,17 +88,21 @@ class Index {
     });
 
     // カテゴリ3選択時にリストを更新
-    const canvas = new WordCloudCanvas(document.getElementById("wordcloud"));
+    this.#canvas = new WordCloudCanvas(document.getElementById("wordcloud"));
     this.#option.category3List.raw.addEventListener("change", async (_) => {
-      await this.#updateCanvas();
+      const uriOfDataSource = this.#option.dataSourceList.raw.value;
+      const dataSource = dataSources.find(x => x.uri == uriOfDataSource);
+      await this.#updateCanvas(dataSource);
     });
   }
 
   /**
    * キャンバスを更新します。 
+   * @param {{ category1: string, category2: string, category3: string }} dataSource データソース情報。
    */
-  #updateCanvas = async() => {
+  #updateCanvas = async(dataSource) => {
     // カテゴリをクリア
+    if (!dataSource) return;
     const category1 = this.#option.category1List.raw.value;
     const category2 = this.#option.category2List.raw.value;
     const category3 = this.#option.category3List.raw.value;
@@ -109,13 +113,10 @@ class Index {
     fileName += ".csv";
 
     // キャンバスを更新
-    const selectedDataSource = this.#option.dataSourceList.raw.value;
-    const dataSource = dataSources.find(x => x.uri == selectedDataSource);
-    canvas.clear();
-    if (!dataSource) return;
+    this.#canvas.clear();
     const uri = `${dataSource.dataDirUri}/${fileName}`;
     const pairs = await this.#gateway.fetchKeywordAggregation(uri);
-    canvas.update(pairs.map(x => [ x.keyword, x.count ]));
+    this.#canvas.update(pairs.map(x => [ x.keyword, x.count ]));
   }
 }
 
