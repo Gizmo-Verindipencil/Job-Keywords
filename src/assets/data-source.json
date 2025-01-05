@@ -1,3 +1,4 @@
 [
-  { "key": "lancers", "uri": "assets/lancers.json", "dataDirUri": "assets/lancers" }
+  { "key": "lancers", "uri": "assets/lancers.json", "dataDirUri": "assets/lancers" },
+  { "key": "coconala", "uri": "assets/coconala.json", "dataDirUri": "assets/coconala" }
 ]
