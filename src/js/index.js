@@ -48,8 +48,11 @@ class Index {
       // 紐づくカテゴリを設定
       this.#option.category1List.add("", "");
       this.#option.category1List.value = "";
-      const relatedCategories = categories.map(x => x.category1);
+      const relatedCategories = categories.map(x => x.category1).filter(x => x != "");
       new Set(relatedCategories).forEach(x => this.#option.category1List.add(x, x));
+      if (relatedCategories.length === 0) {
+        await this.#updateCanvas();
+      }
     });
 
     // カテゴリ1選択時にリストを更新
@@ -61,13 +64,17 @@ class Index {
       // 紐づくカテゴリを設定
       const relatedCategories = categories
         .filter(x => x.category1 == event.target.value)
-        .map(x => x.category2);
+        .map(x => x.category2)
+        .filter(x => x != "");
       this.#option.category2List.add("", "");
       this.#option.category2List.value = "";
-      new Set(relatedCategories).forEach(x => this.#option.category2List.add(x, x));
       if (relatedCategories.length === 0) {
-        await this.#updateCanvas();
+        const uriOfDataSource = this.#option.dataSourceList.raw.value;
+        const dataSource = dataSources.find(x => x.uri == uriOfDataSource);
+        await this.#updateCanvas(dataSource);
+        return;
       }
+      new Set(relatedCategories).forEach(x => this.#option.category2List.add(x, x));  
     });
 
     // カテゴリ2選択時にリストを更新
@@ -79,13 +86,17 @@ class Index {
       const category1 = this.#option.category1List.raw.value;
       const relatedCategories = categories
         .filter(x => x.category1 == category1 && x.category2 == event.target.value)
-        .map(x => x.category3);
+        .map(x => x.category3)
+        .filter(x => x != "");
       this.#option.category3List.add("", "");
       this.#option.category3List.value = "";
-      new Set(relatedCategories).forEach(x => this.#option.category3List.add(x, x));
       if (relatedCategories.length === 0) {
-        await this.#updateCanvas();
+        const uriOfDataSource = this.#option.dataSourceList.raw.value;
+        const dataSource = dataSources.find(x => x.uri == uriOfDataSource);
+        await this.#updateCanvas(dataSource);
+        return;
       }
+      new Set(relatedCategories).forEach(x => this.#option.category3List.add(x, x));
     });
 
     // カテゴリ3選択時にリストを更新
