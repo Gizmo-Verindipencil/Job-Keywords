@@ -19,6 +19,11 @@ class Index {
   #option
 
   /**
+   * @type {{ key: string, uri: string, dataDirUri: string }[]}
+   */
+  #dataSources
+
+  /**
    * 初期化処理を実行します。
    */
   initialize = async () => {
@@ -30,10 +35,10 @@ class Index {
       document.getElementById("exclude-keywords")
     );
 
-    const dataSources = await this.#gateway.fetchDataSources();
+    this.#dataSources = await this.#gateway.fetchDataSources();
     let categories = [];
     this.#option.dataSourceList.add("", "");
-    dataSources.forEach(x => this.#option.dataSourceList.add(x.key.charAt(0).toUpperCase() + x.key.slice(1), x.uri));
+    this.#dataSources.forEach(x => this.#option.dataSourceList.add(x.key.charAt(0).toUpperCase() + x.key.slice(1), x.uri));
     
     // データソース選択時にリストを更新
     this.#option.dataSourceList.raw.addEventListener("change", async (event) => {
@@ -69,9 +74,7 @@ class Index {
       this.#option.category2List.add("", "");
       this.#option.category2List.value = "";
       if (relatedCategories.length === 0) {
-        const uriOfDataSource = this.#option.dataSourceList.raw.value;
-        const dataSource = dataSources.find(x => x.uri == uriOfDataSource);
-        await this.#updateCanvas(dataSource);
+        await this.#updateCanvas();
         return;
       }
       new Set(relatedCategories).forEach(x => this.#option.category2List.add(x, x));  
@@ -91,9 +94,7 @@ class Index {
       this.#option.category3List.add("", "");
       this.#option.category3List.value = "";
       if (relatedCategories.length === 0) {
-        const uriOfDataSource = this.#option.dataSourceList.raw.value;
-        const dataSource = dataSources.find(x => x.uri == uriOfDataSource);
-        await this.#updateCanvas(dataSource);
+        await this.#updateCanvas();
         return;
       }
       new Set(relatedCategories).forEach(x => this.#option.category3List.add(x, x));
@@ -102,19 +103,28 @@ class Index {
     // カテゴリ3選択時にリストを更新
     this.#canvas = new WordCloudCanvas(document.getElementById("wordcloud"));
     this.#option.category3List.raw.addEventListener("change", async (_) => {
-      const uriOfDataSource = this.#option.dataSourceList.raw.value;
-      const dataSource = dataSources.find(x => x.uri == uriOfDataSource);
-      await this.#updateCanvas(dataSource);
+      await this.#updateCanvas();
+    });
+
+    // ダウンロードボタン押下
+    document.getElementById("download").addEventListener("click", async () => {
+      const anchor = document.createElement("a");
+      const uri = this.#getCsvUri();
+      anchor.setAttribute("href", uri);
+      anchor.setAttribute("download", "download.csv");
+      document.body.appendChild(anchor); // for Firefox
+      anchor.click();
+      anchor.remove();
     });
   }
 
   /**
-   * キャンバスを更新します。 
-   * @param {{ category1: string, category2: string, category3: string }} dataSource データソース情報。
+   * データソースのURIを取得します。
+   * @returns 取得結果を返します。
    */
-  #updateCanvas = async(dataSource) => {
-    // カテゴリをクリア
-    if (!dataSource) return;
+  #getCsvUri = () => {
+    const uriOfDataSource = this.#option.dataSourceList.raw.value;
+    const dataSource = this.#dataSources.find(x => x.uri == uriOfDataSource);
     const category1 = this.#option.category1List.raw.value;
     const category2 = this.#option.category2List.raw.value;
     const category3 = this.#option.category3List.raw.value;
@@ -123,10 +133,15 @@ class Index {
     if (category2) fileName += `__${category2}`;
     if (category3) fileName += `__${category3}`;
     fileName += ".csv";
+    return `${dataSource.dataDirUri}/${fileName}`;
+  }
 
-    // データを取得
+  /**
+   * キャンバスを更新します。 
+   */
+  #updateCanvas = async() => {
     this.#setError("");
-    const uri = `${dataSource.dataDirUri}/${fileName}`;
+    const uri = this.#getCsvUri();
     let pairs = await this.#gateway.fetchKeywordAggregation(uri);
     const excludeKeywords = this.#option.excludeKeywords.value.split(",");
     pairs = pairs.filter(x => !excludeKeywords.includes(x.keyword));
