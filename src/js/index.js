@@ -40,12 +40,16 @@ class Index {
     this.#option.dataSourceList.add("", "");
     this.#dataSources.forEach(x => this.#option.dataSourceList.add(x.key.charAt(0).toUpperCase() + x.key.slice(1), x.uri));
     
+    const downloadButton = document.getElementById("download");
+    downloadButton.disabled = true;
+    
     // データソース選択時にリストを更新
     this.#option.dataSourceList.raw.addEventListener("change", async (event) => {
       // 紐づくカテゴリを取得
       categories = await this.#gateway.fetchCategories(event.target.value);
 
       // カテゴリをクリア
+      downloadButton.disabled = true;
       this.#option.category1List.clear();
       this.#option.category2List.clear();
       this.#option.category3List.clear();
@@ -57,12 +61,14 @@ class Index {
       new Set(relatedCategories).forEach(x => this.#option.category1List.add(x, x));
       if (relatedCategories.length === 0) {
         await this.#updateCanvas();
+        downloadButton.disabled = false;
       }
     });
 
     // カテゴリ1選択時にリストを更新
     this.#option.category1List.raw.addEventListener("change", async (event) => {
       // カテゴリをクリア
+      downloadButton.disabled = true;
       this.#option.category2List.clear();
       this.#option.category3List.clear();
 
@@ -75,6 +81,7 @@ class Index {
       this.#option.category2List.value = "";
       if (relatedCategories.length === 0) {
         await this.#updateCanvas();
+        downloadButton.disabled = false;
         return;
       }
       new Set(relatedCategories).forEach(x => this.#option.category2List.add(x, x));  
@@ -83,6 +90,7 @@ class Index {
     // カテゴリ2選択時にリストを更新
     this.#option.category2List.raw.addEventListener("change", async (event) => {
       // カテゴリをクリア
+      downloadButton.disabled = true;
       this.#option.category3List.clear();
 
       // 紐づくカテゴリを設定
@@ -95,6 +103,7 @@ class Index {
       this.#option.category3List.value = "";
       if (relatedCategories.length === 0) {
         await this.#updateCanvas();
+        downloadButton.disabled = false;
         return;
       }
       new Set(relatedCategories).forEach(x => this.#option.category3List.add(x, x));
@@ -104,6 +113,7 @@ class Index {
     this.#canvas = new WordCloudCanvas(document.getElementById("wordcloud"));
     this.#option.category3List.raw.addEventListener("change", async (_) => {
       await this.#updateCanvas();
+      downloadButton.disabled = false;
     });
 
     // ダウンロードボタン押下
