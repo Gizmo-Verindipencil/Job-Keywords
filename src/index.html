@@ -23,7 +23,9 @@
       <textarea id="exclude-keywords">猫,犬,人</textarea>
     </div>
   </div>
-  <canvas id="wordcloud" class="wordcloud"></canvas>
+  <div class="wordcloud-wrapper">
+    <canvas id="wordcloud" class="wordcloud"></canvas>
+  </div>
   <script type="module">
     import { Index } from "./js/index.js";
     Index.initialize();
