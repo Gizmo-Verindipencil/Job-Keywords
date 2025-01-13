@@ -43,3 +43,26 @@ body {
   height: 800px;
   width: 1200px;
 }
+
+@media (max-width: 768px) {
+  body {
+    width: 100vw;
+  }
+
+  .option {
+    width: 100vw;
+  }
+
+  .option .target {
+    flex-direction: column;
+  }
+
+  .option .target select {
+    width: 80%;
+  }
+
+  .wordcloud {
+    transform: scale(0.6444);
+    transform-origin: top left;
+  }
+}
