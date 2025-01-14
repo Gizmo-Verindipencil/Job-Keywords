@@ -20,6 +20,13 @@ export class WordCloudCanvas {
     canvas.height = canvas.clientHeight * scale;
     const context = canvas.getContext("2d");
     context.scale(scale, scale);
+
+    // スマホデザイン時のみ中心を調整
+    if (window.matchMedia("(max-width: 768px)").matches) {
+      const centerX = - canvas.clientWidth / 2;
+      const centerY = - canvas.clientHeight / 2;
+      context.translate(centerX, centerY);
+    }
   }
 
   /**

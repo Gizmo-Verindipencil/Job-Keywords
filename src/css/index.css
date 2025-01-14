@@ -77,8 +77,8 @@ body {
     width: 80%;
   }
 
-  .wordcloud {
-    transform: scale(0.6444);
-    transform-origin: top left;
+  .wordcloud-wrapper {
+    height: 400px;
+    width: 768px;
   }
 }
