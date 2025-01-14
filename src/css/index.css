@@ -38,8 +38,47 @@ body {
   width: 100%;
 }
 
-.wordcloud {
+.wordcloud-wrapper {
   border: 1px solid #dadada;
   height: 800px;
   width: 1200px;
+}
+
+.wordcloud {
+  height: 100%;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  body {
+    width: 100vw;
+  }
+
+  .option {
+    width: 100vw;
+  }
+
+  .option .target {
+    flex-direction: column;
+    padding-left: 3%;
+  }
+
+  .option .target button {
+    height: 3rem;
+    margin-bottom: 1rem;
+    width: 3rem;
+  }
+
+  .option .exclude-keywords textarea {
+    margin-left: 3%;
+  }
+
+  .option .target select {
+    width: 80%;
+  }
+
+  .wordcloud-wrapper {
+    height: 400px;
+    width: 768px;
+  }
 }
